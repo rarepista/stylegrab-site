@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StyleGrab — hover any element, copy its CSS. Free Chrome extension.</title>
-<meta name="description" content="StyleGrab shows you any element's CSS on hover and copies it as clean CSS, Tailwind, JSX or styled-components. 100% local, activeTab-only permissions. The CSS Scan alternative with a free tier.">
+<meta name="description" content="StyleGrab shows you any element's CSS on hover and copies it as clean CSS, Tailwind, JSX or styled-components. 100% local, activeTab-only permissions, free tier included.">
 <meta property="og:title" content="StyleGrab — hover, see the CSS, ship it">
 <meta property="og:description" content="Inspect and copy production CSS from any site — as CSS, Tailwind, JSX or styled-components. Free tier, $29 lifetime Pro.">
 <meta property="og:type" content="website">
@@ -226,14 +226,6 @@ h1 .t-dim { color: var(--faint); }
 .feat .f-k { font: 700 12px var(--mono); color: var(--cyan); display: block; margin-bottom: 6px; }
 .feat p { font-size: 13.5px; color: var(--dim); }
 
-/* ------------------------------ compare ------------------------------ */
-#compare { padding: 70px 0; border-top: 1px solid var(--line-soft); }
-.cmp { width: 100%; border-collapse: collapse; margin-top: 26px; font: 13px var(--mono); }
-.cmp th, .cmp td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line-soft); }
-.cmp th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-.cmp td:first-child { color: var(--dim); font-family: var(--sans); font-size: 13.5px; }
-.cmp .y { color: var(--ok); } .cmp .n { color: var(--faint); }
-.cmp .hi { color: var(--amber); font-weight: 700; }
 
 /* ------------------------------ pricing ------------------------------ */
 #pricing { padding: 70px 0; border-top: 1px solid var(--line-soft); }
@@ -298,7 +290,6 @@ footer a:hover { color: var(--cyan); }
     <div class="nav-links">
       <a href="#demo">Live demo</a>
       <a href="#features">Features</a>
-      <a href="#compare">vs CSS Scan</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </div>
@@ -384,26 +375,6 @@ footer a:hover { color: var(--cyan); }
       <div class="feat"><span class="f-k">Pin, edit, measure</span><p>Pin the panel and edit CSS with live preview on the page. Alt-hover measures pixel distances between elements.</p></div>
       <div class="feat"><span class="f-k">Palette &amp; asset extraction</span><p>Pull a page's full color palette, images and inline SVGs in one click. Export any element straight to CodePen.</p></div>
     </div>
-  </div>
-</section>
-
-<section id="compare">
-  <div class="wrap">
-    <span class="eyebrow">The honest comparison</span>
-    <h2>The CSS Scan alternative with a free tier.</h2>
-    <table class="cmp">
-      <thead><tr><th>—</th><th>StyleGrab</th><th>CSS Scan</th></tr></thead>
-      <tbody>
-        <tr><td>Price (lifetime)</td><td class="hi">$29</td><td>~$80</td></tr>
-        <tr><td>Free tier</td><td class="y">✓ inspect + CSS copy, forever</td><td class="n">✗ pay before first hover</td></tr>
-        <tr><td>Free trial</td><td class="y">✓ 7 days, full Pro</td><td class="n">✗</td></tr>
-        <tr><td>Tailwind conversion</td><td class="y">✓</td><td class="y">✓</td></tr>
-        <tr><td>JSX + styled-components export</td><td class="y">✓</td><td class="n">✗</td></tr>
-        <tr><td>Resolves var(--tokens) on copy</td><td class="y">✓</td><td class="n">✗ raw variables</td></tr>
-        <tr><td>Permissions</td><td class="y">activeTab only — just pages you invoke it on</td><td class="n">reads all websites</td></tr>
-        <tr><td>Works offline / zero servers</td><td class="y">✓</td><td class="y">✓</td></tr>
-      </tbody>
-    </table>
   </div>
 </section>
 
