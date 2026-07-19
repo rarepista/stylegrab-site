@@ -220,8 +220,25 @@ h1 .t-dim { color: var(--faint); }
 .tk-str { color: var(--str); } .tk-pun { color: var(--faint); } .tk-val { color: var(--text); }
 .tk-com { color: var(--faint); font-style: italic; }
 .p-foot { padding: 7px 12px; border-top: 1px solid var(--line-soft); background: var(--bg3);
-  font: 10.5px var(--mono); color: var(--faint); display: flex; gap: 6px; align-items: center; }
-.p-foot .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+  font: 10.5px var(--mono); color: var(--faint); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.p-foot .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); display: inline-block; margin-right: 4px; }
+.p-foot-hint { white-space: nowrap; }
+.p-spacer { flex: 1; min-width: 4px; }
+.p-tool { position: relative; font: 10px var(--mono); color: var(--dim); background: transparent;
+  border: 1px solid var(--line-soft); border-radius: 5px; padding: 3px 8px; cursor: pointer;
+  transition: color .12s, border-color .12s; }
+.p-tool:hover { color: var(--text); border-color: var(--cyan); }
+.p-tool.on { color: var(--bg); background: var(--amber); border-color: var(--amber); font-weight: 700; }
+.p-tool[data-pro]::after { content: 'PRO'; position: absolute; top: -7px; right: -5px;
+  font: 700 6.5px/1 var(--mono); letter-spacing: .04em; color: #1B1206; background: var(--amber);
+  border-radius: 3px; padding: 1.5px 3px; pointer-events: none; }
+.p-pal-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 13px 15px; }
+.p-pal-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line);
+  border-radius: 6px; padding: 4px 8px; font: 11px var(--mono); color: var(--dim); cursor: pointer; background: var(--bg2); }
+.p-pal-chip:hover { border-color: var(--cyan); color: var(--text); }
+.p-pal-chip b { color: var(--faint); font-weight: 400; }
+.p-asset-row { display: flex; align-items: center; gap: 10px; padding: 8px 15px; border-bottom: 1px solid var(--line-soft); }
+.p-asset-swatch { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--line); flex-shrink: 0; background-size: cover; }
 
 /* toast */
 .toast { position: fixed; z-index: 90; left: 50%; bottom: 28px;
@@ -399,7 +416,16 @@ footer a:hover { color: var(--cyan); }
           <button class="btn primary sm p-copy" id="copyBtn">Copy</button>
         </div>
         <div class="p-code"><pre id="code"><span class="tk-com">/* Hover a specimen on the left… */</span></pre></div>
-        <div class="p-foot" id="foot"><span class="dot"></span> extracted live from this page · zero network requests</div>
+        <div class="p-foot">
+          <span class="p-foot-hint" id="footHint"><span class="dot"></span> extracted live from this page · zero network requests</span>
+          <span class="p-spacer"></span>
+          <button class="p-tool" id="btnPin" title="Pin panel & edit CSS live">Pin</button>
+          <button class="p-tool" id="btnHtml" data-pro title="Copy element + children as HTML & CSS">+HTML</button>
+          <button class="p-tool" id="btnPen" data-pro title="Open this element in CodePen">Pen</button>
+          <button class="p-tool" id="btnPalette" data-pro title="Extract this board's color palette">Palette</button>
+          <button class="p-tool" id="btnAssets" data-pro title="Find images &amp; gradients on this board">Assets</button>
+          <button class="p-tool" id="btnShot" data-pro title="Copy this element as a PNG">Shot</button>
+        </div>
       </aside>
     </div>
   </div>
@@ -871,11 +897,14 @@ footer a:hover { color: var(--cyan); }
       : escapeHtml(out).replace(/class=&quot;([^&]*)&quot;/, 'class=&quot;<span class="tk-str">$1</span>&quot;');
   }
 
+  var pinned = false;
   board.addEventListener("mouseover", function (e) {
+    if (pinned) return; // frozen selection while pinned, same as the real panel
     var s = e.target.closest(".spec");
     if (s && s !== current) selectSpec(s);
   });
   board.addEventListener("click", function (e) {
+    if (pinned) return;
     var s = e.target.closest(".spec");
     if (!s) return;
     if (s.tagName !== "INPUT") e.preventDefault();
@@ -922,6 +951,149 @@ footer a:hover { color: var(--cyan); }
     }).catch(function () { toast("Clipboard blocked — select & copy manually"); });
   }
   copyBtn.addEventListener("click", doCopy);
+
+  /* ------------------------ Pro tools: same badge pattern the real ------------------------
+     free tier shows — a small "PRO" tag on gated buttons. Pin + CodePen + Palette +
+     Assets + component copy are genuinely functional here, scanning this real page;
+     Shot needs page-capture permissions a plain webpage can't have, so it stays
+     locked with an honest "try it after installing" message. */
+  var btnPin = document.getElementById("btnPin");
+  var btnHtml = document.getElementById("btnHtml");
+  var btnPen = document.getElementById("btnPen");
+  var btnPalette = document.getElementById("btnPalette");
+  var btnAssets = document.getElementById("btnAssets");
+  var btnShot = document.getElementById("btnShot");
+  var footHint = document.getElementById("footHint");
+  var PRO_LOCKED = false; // demo runs fully unlocked, like a trial — flip true to preview the free tier
+
+  function lockedToast(what) { toast(what + " is Pro — try it free for 7 days after installing"); }
+
+  btnPin.addEventListener("click", function () {
+    if (!current) { toast("Hover a specimen first"); return; }
+    pinned = !pinned;
+    btnPin.classList.toggle("on", pinned);
+    if (pinned) {
+      if (fmt !== "css") { fmt = "css"; seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-fmt") === "css"); }); }
+      if (PRO_LOCKED) {
+        render();
+        footHint.textContent = "Pinned. Live editing is a Pro feature.";
+        return;
+      }
+      codeEl.setAttribute("contenteditable", "plaintext-only");
+      codeEl.textContent = outputs.css || "";
+      footHint.textContent = "Pinned — edit the CSS below, watch it apply live";
+    } else {
+      codeEl.removeAttribute("contenteditable");
+      current.style.cssText = ""; // revert live edits to the stylesheet-driven look
+      render();
+      footHint.innerHTML = '<span class="dot"></span> extracted live from this page · zero network requests';
+    }
+  });
+  codeEl.addEventListener("input", function () {
+    if (!pinned || !current || PRO_LOCKED) return;
+    var props = {};
+    codeEl.innerText.replace(/([\w-]+)\s*:\s*([^;]+);?/g, function (_, p, v) { props[p.trim()] = v.trim(); });
+    current.style.cssText = "";
+    Object.keys(props).forEach(function (p) { try { current.style.setProperty(p, props[p]); } catch (e) {} });
+  });
+
+  btnPen.addEventListener("click", function () {
+    if (!current) { toast("Hover a specimen first"); return; }
+    if (PRO_LOCKED) return lockedToast("CodePen export");
+    var name = current.getAttribute("data-name") || current.tagName.toLowerCase();
+    var tag = name.split(".")[0] || current.tagName.toLowerCase();
+    var form = document.createElement("form");
+    form.action = "https://codepen.io/pen/define";
+    form.method = "POST"; form.target = "_blank"; form.style.display = "none";
+    var input = document.createElement("input");
+    input.type = "hidden"; input.name = "data";
+    input.value = JSON.stringify({
+      title: "StyleGrab demo — " + name,
+      html: "<" + tag + ">" + (current.textContent || "").trim() + "</" + tag + ">",
+      css: outputs.css || "",
+      editors: "110"
+    });
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(function () { form.remove(); }, 500);
+    toast("Opening CodePen…");
+  });
+
+  function scanPalette() {
+    var counts = {}, seen = [];
+    var nodes = document.querySelectorAll("#board .spec, #board .spec *");
+    for (var i = 0; i < nodes.length; i++) {
+      var cs = getComputedStyle(nodes[i]);
+      [cs.color, cs.backgroundColor].forEach(function (raw) {
+        if (!raw || raw === "rgba(0, 0, 0, 0)") return;
+        var h = hex(raw);
+        if (!/^#/.test(h)) return;
+        counts[h] = (counts[h] || 0) + 1;
+        if (seen.indexOf(h) === -1) seen.push(h);
+      });
+    }
+    return seen.sort(function (a, b) { return counts[b] - counts[a]; }).map(function (h) { return [h, counts[h]]; });
+  }
+  btnPalette.addEventListener("click", function () {
+    if (PRO_LOCKED) return lockedToast("Palette extraction");
+    var entries = scanPalette();
+    codeEl.removeAttribute("contenteditable");
+    codeEl.innerHTML = '<div class="p-pal-grid">' + entries.map(function (e) {
+      return '<span class="p-pal-chip" data-copy="' + e[0] + '"><span class="p-dot" style="background:' + e[0] + '"></span>' + e[0] + " <b>×" + e[1] + "</b></span>";
+    }).join("") + "</div>";
+    toast("Scanned " + entries.length + " colors from this board — click one to copy");
+  });
+
+  function scanAssets() {
+    var out = [], nodes = document.querySelectorAll("#board .spec, #board .spec *");
+    for (var i = 0; i < nodes.length; i++) {
+      var bi = getComputedStyle(nodes[i]).backgroundImage;
+      if (bi && bi !== "none" && out.indexOf(bi) === -1) out.push(bi);
+    }
+    return out;
+  }
+  btnAssets.addEventListener("click", function () {
+    if (PRO_LOCKED) return lockedToast("Asset extraction");
+    var items = scanAssets();
+    codeEl.removeAttribute("contenteditable");
+    if (!items.length) { codeEl.innerHTML = '<span class="tk-com">/* No background images or gradients found on this board. */</span>'; return; }
+    codeEl.innerHTML = items.map(function (v) {
+      var safe = v.replace(/"/g, "&quot;");
+      var label = v.length > 62 ? v.slice(0, 62) + "…" : v;
+      return '<div class="p-asset-row"><span class="p-asset-swatch" style="background-image:' + safe + '"></span><span class="tk-str">' + escapeHtml(label) + "</span></div>";
+    }).join("");
+    toast(items.length + " image source(s) found on this board");
+  });
+
+  /* mini component copy: same architecture as the real one — walk the
+     subtree, give every node its own class, extract its own diff, bundle
+     every chunk. Reuses extract()/collapse() already built above. */
+  function buildComponentDemo(rootEl) {
+    var clone = rootEl.cloneNode(true);
+    var cssChunks = [], queue = [[rootEl, clone]], n = 0;
+    for (var qi = 0; qi < queue.length; qi++) {
+      var src = queue[qi][0], dst = queue[qi][1];
+      if (!src || src.nodeType !== 1) continue;
+      n++;
+      var cls = src.tagName.toLowerCase() + "-sg" + n;
+      dst.setAttribute("class", cls);
+      dst.removeAttribute("data-name"); dst.removeAttribute("id");
+      var pairs = extract(src);
+      if (pairs.length) cssChunks.push("." + cls + " {\n" + pairs.map(function (d) { return "  " + d[0] + ": " + d[1] + ";"; }).join("\n") + "\n}");
+      var sKids = [].slice.call(src.children), dKids = [].slice.call(dst.children);
+      for (var i = 0; i < sKids.length && i < dKids.length; i++) queue.push([sKids[i], dKids[i]]);
+    }
+    return { html: clone.outerHTML.replace(/></g, ">\n<"), css: cssChunks.join("\n\n"), nodes: n };
+  }
+  btnHtml.addEventListener("click", function () {
+    if (!current) { toast("Hover a specimen first"); return; }
+    if (PRO_LOCKED) return lockedToast("Component copy");
+    var comp = buildComponentDemo(current);
+    copyText(comp.html + "\n\n<style>\n" + comp.css + "\n</style>", "Copied " + comp.nodes + "-node component");
+  });
+
+  btnShot.addEventListener("click", function () { lockedToast("Element screenshot"); });
 
   /* preselect the gradient button so the panel is never empty */
   selectSpec(document.querySelector(".s-btn"));
