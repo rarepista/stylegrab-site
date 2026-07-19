@@ -176,6 +176,32 @@
       color: var(--amber);
     }
 
+    /* Sections whose content is a centered, narrower-than-wrap block
+       (pricing cards, FAQ list, builder note) get centered headers too,
+       so heading and content share an axis instead of clashing edges.
+       Full-width sections (demo, features, compare) keep left headers. */
+    .sec-center {
+      text-align: center;
+    }
+
+    .sec-center .eyebrow {
+      display: block;
+    }
+
+    .sec-center .sub,
+    .sec-center .cmp-foot,
+    .sec-center .builder-copy {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* content inside those sections stays left-aligned — only headers center */
+    .sec-center .price-grid,
+    .sec-center .faq-list,
+    .sec-center .builder-copy {
+      text-align: left;
+    }
+
     h2 {
       font: 800 26px/1.25 var(--mono);
       letter-spacing: -.01em;
@@ -208,6 +234,16 @@
       background: var(--nav-bg);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line-soft);
+    }
+
+    .scroll-progress {
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--cyan));
+      transition: width .12s linear;
     }
 
     .nav-in {
@@ -245,13 +281,30 @@
     }
 
     .nav-links a {
+      position: relative;
       color: var(--dim);
       font: 500 13px var(--mono);
+      transition: color .16s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 100%;
+      bottom: -4px;
+      height: 1px;
+      background: var(--cyan);
+      transition: right .22s var(--ease);
     }
 
     .nav-links a:hover {
       color: var(--text);
       text-decoration: none;
+    }
+
+    .nav-links a:hover::after {
+      right: 0;
     }
 
     .theme-toggle {
@@ -312,13 +365,15 @@
       border: 1px solid var(--line);
       color: var(--text);
       background: var(--bg3);
-      transition: border-color .14s, color .14s, transform .06s, filter .14s;
+      transition: border-color .14s, color .14s, transform .18s var(--ease), filter .14s, box-shadow .18s var(--ease);
     }
 
     .btn:hover {
       border-color: var(--cyan);
       color: var(--cyan);
       text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .22);
     }
 
     .btn:active {
@@ -326,9 +381,28 @@
     }
 
     .btn.primary {
+      position: relative;
+      overflow: hidden;
       background: var(--cyan);
       border-color: var(--cyan);
       color: var(--bg);
+    }
+
+    .btn.primary::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .4), transparent);
+      transform: skewX(-20deg);
+      transition: left .55s ease;
+      pointer-events: none;
+    }
+
+    .btn.primary:hover::after {
+      left: 130%;
     }
 
     .btn.primary:hover {
@@ -358,6 +432,7 @@
       height: 34px;
       color: var(--amber);
       opacity: .8;
+      animation: reticlePulse 3.4s ease-in-out infinite;
     }
 
     .rc-tl {
@@ -374,6 +449,62 @@
       border-bottom: 2px solid;
       border-right: 2px solid;
       border-radius: 0 0 6px 0;
+      animation-delay: .8s;
+    }
+
+    @keyframes reticlePulse {
+
+      0%,
+      100% {
+        opacity: .8;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .hero-in .eyebrow {
+      animation: fadeUp .6s var(--ease) both;
+    }
+
+    .hero-in h1 {
+      animation: fadeUp .6s var(--ease) .08s both;
+    }
+
+    .hero-in .sub {
+      animation: fadeUp .6s var(--ease) .16s both;
+    }
+
+    .hero-in .hero-ctas {
+      animation: fadeUp .6s var(--ease) .24s both;
+    }
+
+    .hero-in .hero-note {
+      animation: fadeUp .6s var(--ease) .32s both;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s var(--ease), transform .6s var(--ease);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
     }
 
     h1 {
@@ -1078,6 +1209,13 @@
       border-radius: 12px;
       padding: 18px;
       background: var(--bg2);
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s;
+    }
+
+    .feat:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-hi);
+      box-shadow: var(--shadow);
     }
 
     .feat .f-k {
@@ -1176,7 +1314,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-      margin-top: 28px;
+      margin: 28px auto 0;
       max-width: 720px;
     }
 
@@ -1185,11 +1323,19 @@
       border-radius: 14px;
       padding: 24px;
       background: var(--bg2);
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+    }
+
+    .plan:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
     }
 
     .plan.pro {
       border-color: var(--amber);
+      border-width: 1.5px;
       position: relative;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--amber) 9%, var(--bg2)), var(--bg2) 55%);
     }
 
     .plan.pro::before {
@@ -1203,11 +1349,33 @@
       background: var(--amber);
       border-radius: 4px;
       padding: 2px 8px;
+      animation: badgePulse 2.6s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.07);
+      }
     }
 
     .plan h3 {
       font: 800 16px var(--mono);
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .plan.pro h3::after {
+      content: '★';
+      color: var(--amber);
+      font-size: 13px;
     }
 
     .plan .amount {
@@ -1220,9 +1388,21 @@
       color: var(--dim);
     }
 
+    .plan .plan-plus {
+      font: 600 11.5px var(--sans);
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-top: 14px;
+    }
+
     .plan ul {
       list-style: none;
       margin: 16px 0 20px;
+    }
+
+    .plan.pro ul {
+      margin-top: 8px;
     }
 
     .plan li {
@@ -1245,6 +1425,14 @@
       color: var(--amber);
     }
 
+    .plan.pro .btn.primary {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 18px;
+      font-size: 14px;
+    }
+
     /* ------------------------------ privacy strip ------------------------------ */
     .privacy {
       border-top: 1px solid var(--line-soft);
@@ -1258,6 +1446,8 @@
       gap: 26px;
       align-items: baseline;
       flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
     }
 
     .privacy b {
@@ -1275,11 +1465,9 @@
       padding: 50px 0;
     }
 
-    .builder-in {
-      max-width: 680px;
-    }
-
     .builder-copy {
+      max-width: 680px;
+      margin-top: 12px;
       font-size: 14.5px;
       line-height: 1.75;
       color: var(--dim);
@@ -1291,7 +1479,7 @@
     }
 
     .faq-list {
-      margin-top: 24px;
+      margin: 24px auto 0;
       max-width: 760px;
     }
 
@@ -1405,6 +1593,47 @@
       .s-btn {
         transition: none;
       }
+
+      .reticle-corner,
+      .hero-in .eyebrow,
+      .hero-in h1,
+      .hero-in .sub,
+      .hero-in .hero-ctas,
+      .hero-in .hero-note {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+
+      .reveal {
+        transition: none;
+        opacity: 1;
+        transform: none;
+      }
+
+      .btn:hover,
+      .feat:hover,
+      .plan:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .nav-links a::after {
+        transition: none;
+      }
+
+      .plan.pro::before {
+        animation: none;
+      }
+
+      .btn.primary::after {
+        transition: none;
+        left: -60%;
+      }
+
+      .scroll-progress {
+        transition: none;
+      }
     }
   </style>
   <script>
@@ -1425,6 +1654,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
 
   <nav>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
     <div class="wrap nav-in">
       <a class="brand" href="#top" aria-label="StyleGrab home">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -1648,7 +1878,7 @@
     </section>
 
     <section id="pricing">
-      <div class="wrap">
+      <div class="wrap sec-center">
         <span class="eyebrow">Pricing</span>
         <h2>Free to use. $29 once if it earns it.</h2>
         <p class="sub">Founding price — Pro is priced at $29 while StyleGrab is new. That number goes up as more of the
@@ -1656,7 +1886,7 @@
         <div class="price-grid">
           <div class="plan">
             <h3>Free</h3>
-            <div class="amount">$0</div>
+            <div class="amount">$<span class="amount-num" data-target="0">0</span></div>
             <ul>
               <li>Hover-inspect any element</li>
               <li>Copy full CSS — pseudo, media, keyframes</li>
@@ -1670,7 +1900,9 @@
           </div>
           <div class="plan pro">
             <h3>Pro</h3>
-            <div class="amount">$29 <small>one-time · lifetime updates</small></div>
+            <div class="amount">$<span class="amount-num" data-target="29">29</span> <small>one-time · lifetime
+                updates</small></div>
+            <p class="plan-plus">Everything in Free, plus:</p>
             <ul>
               <li class="locked">Tailwind / JSX / styled-components / Vue / Svelte export</li>
               <li class="locked">Copy element + children (HTML &amp; CSS), incl. Tailwind HTML</li>
@@ -1702,7 +1934,7 @@
     </div>
 
     <section id="builder">
-      <div class="wrap builder-in">
+      <div class="wrap sec-center">
         <span class="eyebrow">Who's behind this</span>
         <p class="builder-copy">StyleGrab is a small, independently-built tool — not a company, not a growth team, no
           funding round to justify. It exists because copying CSS out of DevTools got old, and a tool that reads pages
@@ -1713,7 +1945,7 @@
     </section>
 
     <section id="faq">
-      <div class="wrap">
+      <div class="wrap sec-center">
         <span class="eyebrow">FAQ</span>
         <h2>Questions people actually ask.</h2>
         <div class="faq-list">
@@ -1785,6 +2017,99 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* Scroll-reveal: fade+rise groups of cards/rows/section-intros into
+       place the first time they enter the viewport, staggered per group.
+       The pricing amounts count up from 0 the moment their card reveals.
+       Skips entirely under reduced-motion (everything just shows/settles
+       immediately via .in, counters jump straight to their target). */
+    (function () {
+      "use strict";
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var groups = [
+        document.querySelectorAll("#features .feat"),
+        document.querySelectorAll("#compare .cmp-row:not(.cmp-head)"),
+        document.querySelectorAll("#pricing .plan"),
+        document.querySelectorAll("#faq details")
+      ];
+      var headerContainers = [
+        document.querySelector("#demo .demo-head"),
+        document.querySelector("#features > .wrap"),
+        document.querySelector("#compare > .wrap"),
+        document.querySelector("#pricing > .wrap"),
+        document.querySelector("#builder .wrap"),
+        document.querySelector("#faq > .wrap")
+      ];
+      var targets = [];
+      groups.forEach(function (list) {
+        Array.prototype.forEach.call(list, function (el, i) {
+          el.classList.add("reveal");
+          el.style.transitionDelay = (Math.min(i, 6) * 55) + "ms";
+          targets.push(el);
+        });
+      });
+      headerContainers.forEach(function (container) {
+        if (!container) return;
+        var bits = container.querySelectorAll(":scope > .eyebrow, :scope > h2, :scope > .sub, :scope > .builder-copy");
+        Array.prototype.forEach.call(bits, function (el, i) {
+          el.classList.add("reveal");
+          el.style.transitionDelay = (i * 70) + "ms";
+          targets.push(el);
+        });
+      });
+
+      function animateCount(el) {
+        var target = parseInt(el.getAttribute("data-target"), 10);
+        if (isNaN(target) || target === 0) return;
+        el.textContent = "0";
+        var start = null, dur = 900;
+        function step(ts) {
+          if (!start) start = ts;
+          var p = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(eased * target);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      if (reduce || !("IntersectionObserver" in window)) {
+        targets.forEach(function (el) { el.classList.add("in"); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+            if (entry.target.classList.contains("plan")) {
+              Array.prototype.forEach.call(entry.target.querySelectorAll(".amount-num"), animateCount);
+            }
+          }
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+      targets.forEach(function (el) { io.observe(el); });
+    })();
+
+    /* Thin scroll-progress bar under the nav. */
+    (function () {
+      "use strict";
+      var bar = document.getElementById("scrollProgress");
+      if (!bar) return;
+      var ticking = false;
+      function update() {
+        var doc = document.documentElement;
+        var max = doc.scrollHeight - doc.clientHeight;
+        bar.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + "%";
+        ticking = false;
+      }
+      window.addEventListener("scroll", function () {
+        if (!ticking) { requestAnimationFrame(update); ticking = true; }
+      }, { passive: true });
+      update();
+    })();
+  </script>
 
   <script>
     /* ================================================================
