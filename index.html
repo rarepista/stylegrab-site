@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StyleGrab — hover any element, copy its CSS. Free Chrome extension.</title>
-<meta name="description" content="StyleGrab shows you any element's CSS on hover and copies it as clean CSS, Tailwind, JSX or styled-components. 100% local, activeTab-only permissions, free tier included.">
+<meta name="description" content="StyleGrab shows you any element's CSS on hover and copies it as clean CSS, Tailwind, JSX, styled-components, Vue or Svelte. 100% local, activeTab-only permissions, free tier included.">
 <meta property="og:title" content="StyleGrab — hover, see the CSS, ship it">
-<meta property="og:description" content="Inspect and copy production CSS from any site — as CSS, Tailwind, JSX or styled-components. Free tier, $29 lifetime Pro.">
+<meta property="og:description" content="Inspect and copy production CSS from any site — as CSS, Tailwind, JSX, styled-components, Vue or Svelte. Free tier, $29 lifetime Pro.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0B0E14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Crect width='16' height='16' rx='3.5' fill='%230B0E14'/%3E%3Cpath d='M2.5 5.4V3.6c0-.6.5-1.1 1.1-1.1h1.8M10.6 2.5h1.8c.6 0 1.1.5 1.1 1.1v1.8M13.5 10.6v1.8c0 .6-.5 1.1-1.1 1.1h-1.8M5.4 13.5H3.6c-.6 0-1.1-.5-1.1-1.1v-1.8' stroke='%23F0B25C' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpath d='M6.6 5.8 5.4 8l1.2 2.2M9.4 5.8 10.6 8l-1.2 2.2' stroke='%234CC2FF' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -293,8 +293,8 @@ footer a:hover { color: var(--cyan); }
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </div>
-    <!-- TODO: replace href with your Chrome Web Store listing URL after approval -->
-    <a class="btn primary sm" href="#pricing" id="cta-nav">Add to Chrome</a>
+    <!-- TODO: swap for the Chrome Web Store listing URL once approved -->
+    <a class="btn primary sm" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener" id="cta-nav">Add to Chrome</a>
   </div>
 </nav>
 
@@ -306,10 +306,10 @@ footer a:hover { color: var(--cyan); }
     <h1>Hover any element.<br>
       <span class="t-amber">See its CSS</span><span class="t-dim">.</span>
       <span class="t-cyan">Ship it</span><span class="t-dim">.</span></h1>
-    <p class="sub">StyleGrab reads the styles a site's developer actually wrote — pseudo-classes, media queries, keyframes and all — and copies them as clean <b>CSS, Tailwind, JSX or styled-components</b>. No DevTools spelunking.</p>
+    <p class="sub">StyleGrab reads the styles a site's developer actually wrote — pseudo-classes, media queries, keyframes and all — and copies them as clean <b>CSS, Tailwind, JSX, styled-components, Vue or Svelte</b>. No DevTools spelunking.</p>
     <div class="hero-ctas">
-      <!-- TODO: replace href with your Chrome Web Store listing URL after approval -->
-      <a class="btn primary" href="#pricing">Add to Chrome — free</a>
+      <!-- TODO: swap for the Chrome Web Store listing URL once approved -->
+      <a class="btn primary" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener">Add to Chrome — free</a>
       <a class="btn" href="#demo">Try the live demo ↓</a>
     </div>
     <p class="hero-note"><b>No account. No servers. No data collection.</b> Injected only on pages where you invoke it.</p>
@@ -370,10 +370,10 @@ footer a:hover { color: var(--cyan); }
     <div class="feat-grid">
       <div class="feat"><span class="f-k">Authored CSS, not computed soup</span><p>Reads the actual rules the developer wrote — merged by real cascade and specificity — with a rendered-styles fallback when stylesheets are locked.</p></div>
       <div class="feat"><span class="f-k">:hover, @media, @keyframes included</span><p>One copy grabs pseudo-classes, pseudo-elements, responsive breakpoints and the animations an element references.</p></div>
-      <div class="feat"><span class="f-k">Four output dialects</span><p>Clean CSS, Tailwind classes (with hover: and md: prefixes), React/JSX style objects, or styled-components.</p></div>
-      <div class="feat"><span class="f-k">Portable by default</span><p>var(--tokens) get resolved to real values and inherited typography is folded in, so pasted snippets look right anywhere.</p></div>
-      <div class="feat"><span class="f-k">Pin, edit, measure</span><p>Pin the panel and edit CSS with live preview on the page. Alt-hover measures pixel distances between elements.</p></div>
-      <div class="feat"><span class="f-k">Palette &amp; asset extraction</span><p>Pull a page's full color palette, images and inline SVGs in one click. Export any element straight to CodePen.</p></div>
+      <div class="feat"><span class="f-k">Six output dialects</span><p>Clean CSS, Tailwind (utility classes on real HTML, not just a class string), React/JSX, styled-components, Vue, or Svelte — pick per element or per component.</p></div>
+      <div class="feat"><span class="f-k">Portable by default</span><p>var(--tokens) resolve to real values, inherited typography folds in, and every rule keeps a comment naming which stylesheet it came from.</p></div>
+      <div class="feat"><span class="f-k">Pin, edit, measure, screenshot</span><p>Pin the panel and edit CSS with live preview on the page. Alt-hover measures pixel distances. Copy any element as a PNG.</p></div>
+      <div class="feat"><span class="f-k">WCAG contrast, palette &amp; assets</span><p>A contrast-ratio chip on every text element, a full page color palette with usage counts (copy as CSS variables), and an image/SVG collector with real thumbnails.</p></div>
     </div>
   </div>
 </section>
@@ -389,23 +389,28 @@ footer a:hover { color: var(--cyan); }
         <ul>
           <li>Hover-inspect any element</li>
           <li>Copy full CSS — pseudo, media, keyframes</li>
+          <li>WCAG contrast ratio on every text element</li>
           <li>Box-model overlay + measurements</li>
           <li>Color eyedropper</li>
         </ul>
-        <!-- TODO: replace href with your Chrome Web Store listing URL after approval -->
-        <a class="btn" href="#" data-store>Add to Chrome</a>
+        <!-- TODO: swap for the Chrome Web Store listing URL once approved -->
+        <a class="btn" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener">Add to Chrome</a>
       </div>
       <div class="plan pro">
         <h3>Pro</h3>
         <div class="amount">$29 <small>one-time · lifetime updates</small></div>
         <ul>
-          <li class="locked">Tailwind / JSX / styled-components export</li>
-          <li class="locked">Copy element + children (HTML &amp; CSS)</li>
+          <li class="locked">Tailwind / JSX / styled-components / Vue / Svelte export</li>
+          <li class="locked">Copy element + children (HTML &amp; CSS), incl. Tailwind HTML</li>
           <li class="locked">Live CSS editing on any site</li>
-          <li class="locked">Palette &amp; asset extraction, CodePen export</li>
+          <li class="locked">Element screenshot, CodePen export</li>
+          <li class="locked">Palette (usage counts, copy as vars) &amp; asset extraction</li>
         </ul>
-        <!-- TODO: replace href with your Chrome Web Store listing URL after approval -->
-        <a class="btn primary" href="#" data-store>Start 7-day free trial</a>
+        <!-- TODO: swap for the Chrome Web Store listing URL once approved. The
+             trial itself starts inside the extension (one click on any
+             Pro-gated feature) — this button's job is just getting Chrome
+             installed, same destination as the Free plan's CTA. -->
+        <a class="btn primary" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener">Install — trial starts in one click</a>
       </div>
     </div>
   </div>
@@ -415,8 +420,8 @@ footer a:hover { color: var(--cyan); }
   <div class="wrap">
     <b>PRIVACY, PLAINLY:</b>
     <span>No analytics. No accounts. No remote code.</span>
-    <span>Injected only on the tab where you press Alt+Shift+S.</span>
-    <span>The only third party is Stripe-backed checkout when you choose to buy.</span>
+    <span>Injected only on the tab where you press Alt+Shift+S (⌥+Shift+S on Mac).</span>
+    <span>The only third party is Dodo Payments — contacted solely to validate a license key if you buy Pro.</span>
   </div>
 </div>
 
@@ -435,7 +440,11 @@ footer a:hover { color: var(--cyan); }
       </details>
       <details>
         <summary>What data do you collect?</summary>
-        <p>None. The extension runs entirely in your browser, makes zero network requests during use, and only touches pages where you explicitly invoke it (activeTab permission). Checkout, if you buy, happens on a Stripe-backed page — we never see your card.</p>
+        <p>None. The extension runs entirely in your browser, makes zero network requests during normal use, and only touches pages where you explicitly invoke it (activeTab permission). Checkout, if you buy, happens through Dodo Payments — a merchant of record that handles cards, UPI, PayPal and taxes on our behalf. We never see your payment details, and there's no account to create on either side.</p>
+      </details>
+      <details>
+        <summary>What happens after I buy?</summary>
+        <p>Dodo Payments emails you a license key automatically. Paste it into StyleGrab's Options page and Pro unlocks instantly — no account, no login. The key re-validates itself every few days in the background; if you're offline, StyleGrab keeps your Pro status rather than locking you out.</p>
       </details>
       <details>
         <summary>Does it work on React / Vue / Tailwind sites?</summary>
@@ -454,7 +463,8 @@ footer a:hover { color: var(--cyan); }
     <span>© 2026 StyleGrab</span>
     <a href="#demo">Demo</a>
     <a href="#pricing">Pricing</a>
-    <a href="mailto:hello@example.com">Contact</a> <!-- TODO: your email -->
+    <a href="privacy.html">Privacy</a>
+    <a href="mailto:vishalbagi92@gmail.com">Contact</a>
     <span style="margin-left:auto">Built for people who ship.</span>
   </div>
 </footer>
@@ -719,13 +729,6 @@ footer a:hover { color: var(--cyan); }
 
   /* preselect the gradient button so the panel is never empty */
   selectSpec(document.querySelector(".s-btn"));
-
-  /* store-link placeholder guard */
-  document.querySelectorAll("[data-store]").forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      if (a.getAttribute("href") === "#") { e.preventDefault(); toast("Web Store link coming soon — update data-store hrefs"); }
-    });
-  });
 })();
 </script>
 </body>
