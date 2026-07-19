@@ -22,11 +22,34 @@
   --line: #26303C; --line-soft: #1C2530; --line-hi: #33404E;
   --text: #E2E9F1; --dim: #8B98A9; --faint: #5A6572;
   --amber: #F0B25C; --cyan: #4CC2FF; --cyan-dim: rgba(76,194,255,.12);
-  --prop: #6FC9E8; --num: #F5A97F; --str: #A8D9A1; --ok: #6FDCA8;
+  --prop: #6FC9E8; --num: #F5A97F; --str: #A8D9A1; --ok: #6FDCA8; --danger: #E86A5E;
   --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
   --ease: cubic-bezier(.3,.9,.3,1);
   --shadow: 0 18px 50px rgba(0,0,0,.55), 0 4px 14px rgba(0,0,0,.4);
+}
+/* Light theme — every pair below is WCAG-AA verified (≥4.5:1 for real body
+   text; decorative/structural chrome like separators and code punctuation
+   is exempt, same rule the dark theme already follows). Applied via
+   data-theme, driven by the toggle in nav (falls back to the OS preference
+   on first visit, see the theme script near the end of the file). */
+:root[data-theme="light"] {
+  --bg: #F7F9FC; --bg2: #EEF1F6; --bg3: #E3E8EF; --bg-code: #FFFFFF;
+  --line: #D4DBE4; --line-soft: #E3E8EF; --line-hi: #B9C3D0;
+  --text: #14181F; --dim: #4B5768; --faint: #727E90;
+  --amber: #A5620C; --cyan: #0869A8; --cyan-dim: rgba(8,105,168,.10);
+  --prop: #0A6F91; --num: #A54A18; --str: #157A3F; --ok: #12703F; --danger: #C73B2C;
+  --shadow: 0 18px 40px rgba(30,40,60,.12), 0 4px 12px rgba(30,40,60,.08);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F9FC; --bg2: #EEF1F6; --bg3: #E3E8EF; --bg-code: #FFFFFF;
+    --line: #D4DBE4; --line-soft: #E3E8EF; --line-hi: #B9C3D0;
+    --text: #14181F; --dim: #4B5768; --faint: #727E90;
+    --amber: #A5620C; --cyan: #0869A8; --cyan-dim: rgba(8,105,168,.10);
+    --prop: #0A6F91; --num: #A54A18; --str: #157A3F; --ok: #12703F; --danger: #C73B2C;
+    --shadow: 0 18px 40px rgba(30,40,60,.12), 0 4px 12px rgba(30,40,60,.08);
+  }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -34,11 +57,20 @@ body {
   background: var(--bg); color: var(--text);
   font: 16px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
+  /* No transition here: animating a property whose value comes from an
+     inherited custom property (rather than being set directly) doesn't
+     reliably resolve across engines — verified this leaves the page stuck
+     on the pre-toggle color indefinitely rather than just skipping the
+     animation, so an instant theme switch is the safe choice. */
 }
 ::selection { background: rgba(76,194,255,.25); }
 a { color: var(--cyan); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 4px; }
+.skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--cyan);
+  color: #06131C; font: 700 13px var(--mono); padding: 10px 16px; border-radius: 8px;
+  transition: top .15s var(--ease); }
+.skip-link:focus { top: 12px; }
 .wrap { max-width: 1060px; margin: 0 auto; padding: 0 22px; }
 .eyebrow { font: 700 11px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--amber); }
 h2 { font: 800 26px/1.25 var(--mono); letter-spacing: -.01em; margin: 10px 0 10px; }
@@ -69,6 +101,19 @@ nav {
 .nav-links { display: flex; gap: 20px; margin-left: auto; }
 .nav-links a { color: var(--dim); font: 500 13px var(--mono); }
 .nav-links a:hover { color: var(--text); text-decoration: none; }
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg3); color: var(--dim); cursor: pointer; flex-shrink: 0;
+  transition: border-color .14s, color .14s; }
+.theme-toggle:hover { border-color: var(--cyan); color: var(--cyan); }
+.theme-toggle svg { width: 15px; height: 15px; }
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle .icon-moon { display: none; }
+  :root:not([data-theme="dark"]) .theme-toggle .icon-sun { display: block; }
+}
 .btn {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
   font: 700 13.5px var(--mono); border-radius: 8px; padding: 10px 18px;
@@ -96,7 +141,7 @@ h1 .t-cyan { color: var(--cyan); }
 h1 .t-dim { color: var(--faint); }
 .hero .sub { font-size: 17.5px; margin-bottom: 30px; }
 .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.hero-note { font: 12px var(--mono); color: var(--faint); margin-top: 16px; }
+.hero-note { font: 12px var(--mono); color: var(--dim); margin-top: 16px; }
 .hero-note b { color: var(--dim); font-weight: 600; }
 
 /* ------------------------------ demo ------------------------------ */
@@ -110,8 +155,8 @@ h1 .t-dim { color: var(--faint); }
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; align-items: center;
 }
 .board::before {
-  content: 'SPECIMEN BOARD — hover anything'; position: absolute; top: 10px; left: 14px;
-  font: 700 9.5px var(--mono); letter-spacing: .14em; color: var(--faint);
+  content: 'SPECIMEN BOARD — hover or tab through'; position: absolute; top: 10px; left: 14px;
+  font: 700 9.5px var(--mono); letter-spacing: .14em; color: var(--dim);
 }
 .spec { justify-self: center; cursor: crosshair; }
 
@@ -220,7 +265,7 @@ h1 .t-dim { color: var(--faint); }
 .tk-str { color: var(--str); } .tk-pun { color: var(--faint); } .tk-val { color: var(--text); }
 .tk-com { color: var(--faint); font-style: italic; }
 .p-foot { padding: 7px 12px; border-top: 1px solid var(--line-soft); background: var(--bg3);
-  font: 10.5px var(--mono); color: var(--faint); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  font: 10.5px var(--mono); color: var(--dim); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .p-foot .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); display: inline-block; margin-right: 4px; }
 .p-foot-hint { white-space: nowrap; }
 .p-spacer { flex: 1; min-width: 4px; }
@@ -236,7 +281,7 @@ h1 .t-dim { color: var(--faint); }
 .p-pal-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line);
   border-radius: 6px; padding: 4px 8px; font: 11px var(--mono); color: var(--dim); cursor: pointer; background: var(--bg2); }
 .p-pal-chip:hover { border-color: var(--cyan); color: var(--text); }
-.p-pal-chip b { color: var(--faint); font-weight: 400; }
+.p-pal-chip b { color: var(--dim); font-weight: 400; }
 .p-asset-row { display: flex; align-items: center; gap: 10px; padding: 8px 15px; border-bottom: 1px solid var(--line-soft); }
 .p-asset-swatch { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--line); flex-shrink: 0; background-size: cover; }
 
@@ -266,10 +311,10 @@ code { font: 12.5px var(--mono); background: var(--bg3); border: 1px solid var(-
 .cmp-row:last-child { border-bottom: 0; }
 .cmp-head { background: var(--bg3); font: 700 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--dim); padding: 10px 18px; }
 .cmp-row:not(.cmp-head) > span:nth-child(2) { color: var(--dim); }
-.cmp-x { color: #E86A5E; font-weight: 700; text-align: center; }
+.cmp-x { color: var(--danger); font-weight: 700; text-align: center; }
 .cmp-ok { color: var(--ok); }
 .cmp-ok code { color: var(--ok); background: rgba(111,220,168,.1); border-color: rgba(111,220,168,.3); }
-.cmp-foot { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 640px; }
+.cmp-foot { margin-top: 14px; font-size: 12px; color: var(--dim); max-width: 640px; }
 
 
 /* ------------------------------ pricing ------------------------------ */
@@ -312,7 +357,7 @@ details p { color: var(--dim); font-size: 14px; padding: 0 0 16px; max-width: 68
 
 footer { border-top: 1px solid var(--line-soft); padding: 30px 0 44px; }
 footer .wrap { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
-footer span, footer a { font: 12px var(--mono); color: var(--faint); }
+footer span, footer a { font: 12px var(--mono); color: var(--dim); }
 footer a:hover { color: var(--cyan); }
 
 @media (max-width: 900px) {
@@ -331,8 +376,21 @@ footer a:hover { color: var(--cyan); }
   .hl, .hl-tag, .toast, .s-btn { transition: none; }
 }
 </style>
+<script>
+/* Runs before first paint so a returning visitor never sees a flash of the
+   wrong theme. The toggle's click handling lives with the rest of the demo
+   engine near the end of the file — this part only needs to be first. */
+(function () {
+  try {
+    var saved = localStorage.getItem("sg-theme");
+    if (saved === "light" || saved === "dark") document.documentElement.setAttribute("data-theme", saved);
+  } catch (e) {}
+})();
+</script>
 </head>
 <body>
+
+<a class="skip-link" href="#main">Skip to content</a>
 
 <nav>
   <div class="wrap nav-in">
@@ -346,12 +404,18 @@ footer a:hover { color: var(--cyan); }
       <a href="#compare">Why switch</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
+      <a href="privacy.html">Privacy</a>
     </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
+      <svg class="icon-moon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.5 8.6A5.6 5.6 0 0 1 7.4 2.5a5.6 5.6 0 1 0 6.1 6.1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.3v1.6M8 13.1v1.6M14.7 8h-1.6M2.9 8H1.3M12.7 3.3l-1.1 1.1M4.4 11.6l-1.1 1.1M12.7 12.7l-1.1-1.1M4.4 4.4 3.3 3.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </button>
     <!-- TODO: swap for the Chrome Web Store listing URL once approved -->
     <a class="btn primary sm" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener" id="cta-nav">Add to Chrome</a>
   </div>
 </nav>
 
+<main id="main">
 <header class="hero" id="top">
   <div class="grid-bg" aria-hidden="true"></div>
   <div class="wrap hero-in">
@@ -381,15 +445,15 @@ footer a:hover { color: var(--cyan); }
     <div class="demo-grid">
       <div class="board" id="board">
         <button class="spec s-btn" data-name="button.cta">Get started →</button>
-        <div class="spec s-card" data-name="div.card">
+        <div class="spec s-card" data-name="div.card" tabindex="0" role="button" aria-label="Pro plan pricing card — press Enter to inspect and copy its CSS">
           <h4>Pro plan</h4>
           <p>Everything in Free plus exports and live editing.</p>
           <div class="price">$29 <small>/ lifetime</small></div>
         </div>
-        <span class="spec s-badge" data-name="span.badge">● Operational</span>
-        <input class="spec s-input" data-name="input.field" placeholder="you@example.com" aria-label="Email example">
-        <button class="spec s-toggle" data-name="button.toggle" aria-label="Toggle example"></button>
-        <div class="spec s-avatar" data-name="div.avatar">
+        <span class="spec s-badge" data-name="span.badge" tabindex="0" role="button" aria-label="Status badge — press Enter to inspect and copy its CSS">● Operational</span>
+        <input class="spec s-input" data-name="input.field" placeholder="you@example.com" aria-label="Email example — focus to inspect its CSS">
+        <button class="spec s-toggle" data-name="button.toggle" aria-label="Toggle example — press Enter to inspect and copy its CSS"></button>
+        <div class="spec s-avatar" data-name="div.avatar" tabindex="0" role="button" aria-label="Avatar card — press Enter to inspect and copy its CSS">
           <div class="a-img">VB</div>
           <div class="a-meta"><div class="a-name">Vishal B.</div><div class="a-role">builds things</div></div>
         </div>
@@ -406,12 +470,12 @@ footer a:hover { color: var(--cyan); }
         <div class="p-meta" id="meta"></div>
         <div class="p-bar">
           <div class="seg" role="tablist" aria-label="Output format">
-            <button class="on" data-fmt="css">CSS</button>
-            <button data-fmt="tailwind">Tailwind</button>
-            <button data-fmt="jsx">JSX</button>
-            <button data-fmt="styled">SC</button>
-            <button data-fmt="vue">Vue</button>
-            <button data-fmt="svelte">Svelte</button>
+            <button class="on" role="tab" aria-selected="true" data-fmt="css">CSS</button>
+            <button role="tab" aria-selected="false" data-fmt="tailwind">Tailwind</button>
+            <button role="tab" aria-selected="false" data-fmt="jsx">JSX</button>
+            <button role="tab" aria-selected="false" data-fmt="styled">SC</button>
+            <button role="tab" aria-selected="false" data-fmt="vue">Vue</button>
+            <button role="tab" aria-selected="false" data-fmt="svelte">Svelte</button>
           </div>
           <button class="btn primary sm p-copy" id="copyBtn">Copy</button>
         </div>
@@ -564,6 +628,7 @@ footer a:hover { color: var(--cyan); }
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap">
@@ -576,7 +641,7 @@ footer a:hover { color: var(--cyan); }
   </div>
 </footer>
 
-<div class="toast" id="toast">Copied to clipboard</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* ================================================================
@@ -825,7 +890,6 @@ footer a:hover { color: var(--cyan); }
   var crumbEl = document.getElementById("crumb");
   var dimsEl = document.getElementById("dims");
   var metaEl = document.getElementById("meta");
-  var footEl = document.getElementById("foot");
   var copyBtn = document.getElementById("copyBtn");
   var toastEl = document.getElementById("toast");
   var seg = document.querySelector(".seg");
@@ -848,7 +912,7 @@ footer a:hover { color: var(--cyan); }
       vue: toVueSfc(pairs, tag),
       svelte: toSvelte(pairs, tag)
     };
-    footEl.innerHTML = '<span class="dot"></span> ' + pairs.length + " declaration" + (pairs.length === 1 ? "" : "s") + " · extracted live · zero network requests";
+    footHint.innerHTML = '<span class="dot"></span> ' + pairs.length + " declaration" + (pairs.length === 1 ? "" : "s") + " · extracted live · zero network requests";
     render();
 
     var br = board.getBoundingClientRect(), r = el.getBoundingClientRect();
@@ -911,12 +975,34 @@ footer a:hover { color: var(--cyan); }
     selectSpec(s);
     doCopy();
   });
+  // Keyboard parity for the demo: focus (Tab) previews a specimen exactly
+  // like hover does; "focusin" is used because plain "focus" doesn't bubble,
+  // which delegation needs. Enter/Space then copies it, matching click —
+  // but only for the div/span specimens, since <button>/<input> already get
+  // correct native keyboard behavior for free and adding our own on top
+  // would fire selectSpec+doCopy twice.
+  board.addEventListener("focusin", function (e) {
+    if (pinned) return;
+    var s = e.target.closest(".spec");
+    if (s && s !== current) selectSpec(s);
+  });
+  board.addEventListener("keydown", function (e) {
+    if (pinned || (e.key !== "Enter" && e.key !== " ")) return;
+    var s = e.target.closest(".spec");
+    if (!s || s.tagName === "BUTTON" || s.tagName === "INPUT") return;
+    e.preventDefault();
+    selectSpec(s);
+    doCopy();
+  });
 
   seg.addEventListener("click", function (e) {
     var b = e.target.closest("[data-fmt]");
     if (!b) return;
     fmt = b.getAttribute("data-fmt");
-    seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); });
+    seg.querySelectorAll("button").forEach(function (x) {
+      x.classList.toggle("on", x === b);
+      x.setAttribute("aria-selected", x === b ? "true" : "false");
+    });
     render();
   });
 
@@ -1094,6 +1180,26 @@ footer a:hover { color: var(--cyan); }
   });
 
   btnShot.addEventListener("click", function () { lockedToast("Element screenshot"); });
+
+  /* ------------------------------ theme toggle ------------------------------ */
+  var themeToggle = document.getElementById("themeToggle");
+  var mql = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)");
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    return attr || (mql && mql.matches ? "light" : "dark");
+  }
+  function syncThemeButton() {
+    var light = currentTheme() === "light";
+    themeToggle.setAttribute("aria-pressed", light ? "true" : "false");
+    themeToggle.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+  }
+  themeToggle.addEventListener("click", function () {
+    var next = currentTheme() === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("sg-theme", next); } catch (e) {}
+    syncThemeButton();
+  });
+  syncThemeButton();
 
   /* preselect the gradient button so the panel is never empty */
   selectSpec(document.querySelector(".s-btn"));
