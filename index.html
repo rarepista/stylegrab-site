@@ -8,6 +8,8 @@
 <meta property="og:title" content="StyleGrab — hover, see the CSS, ship it">
 <meta property="og:description" content="Inspect and copy production CSS from any site — as CSS, Tailwind, JSX, styled-components, Vue or Svelte. Free tier, $29 lifetime Pro.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://stylegrab.000426.xyz/">
+<link rel="canonical" href="https://stylegrab.000426.xyz/">
 <meta name="theme-color" content="#0B0E14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Crect width='16' height='16' rx='3.5' fill='%230B0E14'/%3E%3Cpath d='M2.5 5.4V3.6c0-.6.5-1.1 1.1-1.1h1.8M10.6 2.5h1.8c.6 0 1.1.5 1.1 1.1v1.8M13.5 10.6v1.8c0 .6-.5 1.1-1.1 1.1h-1.8M5.4 13.5H3.6c-.6 0-1.1-.5-1.1-1.1v-1.8' stroke='%23F0B25C' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpath d='M6.6 5.8 5.4 8l1.2 2.2M9.4 5.8 10.6 8l-1.2 2.2' stroke='%234CC2FF' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -226,6 +228,10 @@ h1 .t-dim { color: var(--faint); }
 .s-chips .chip {
   display: inline-block; padding: 5px 12px; background: #1A2333; color: #4CC2FF;
   border: 1px solid #2A3648; border-radius: 999px; font: 500 11.5px var(--sans);
+}
+.s-photo {
+  display: block; width: 100%; max-width: 180px; height: 120px;
+  object-fit: cover; border-radius: 14px; box-shadow: 0 14px 30px rgba(0,0,0,0.4);
 }
 
 /* highlight reticle inside the board */
@@ -487,6 +493,7 @@ footer a:hover { color: var(--cyan); }
         <div class="spec s-chips" data-name="div.chips" tabindex="0" role="button" aria-label="Tag chip group — press Enter to inspect and copy its CSS">
           <span class="chip">css</span><span class="chip">tailwind</span><span class="chip">jsx</span>
         </div>
+        <img class="spec s-photo" data-name="img.thumb" tabindex="0" role="button" aria-label="Photo thumbnail — press Enter to inspect and copy its CSS" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 110'%3E%3Crect width='160' height='110' fill='%230E1420'/%3E%3Ccircle cx='120' cy='30' r='14' fill='%23F0B25C'/%3E%3Cpath d='M0 90 L40 50 L70 78 L100 48 L160 95 L160 110 L0 110 Z' fill='%234CC2FF' fill-opacity='0.4'/%3E%3Cpath d='M0 100 L55 65 L95 88 L130 68 L160 105 L160 110 L0 110 Z' fill='%236FDCA8' fill-opacity='0.35'/%3E%3C/svg%3E">
         <div class="hl" id="hl"></div>
         <div class="hl-tag" id="hlTag"></div>
       </div>
@@ -544,7 +551,7 @@ footer a:hover { color: var(--cyan); }
   <div class="wrap">
     <span class="eyebrow">Why switch</span>
     <h2>We read the reviews of the tool everyone already uses.</h2>
-    <p class="sub">CSS Scan is the category leader for a reason — it's fast and it works. But its own users keep hitting the same walls in their reviews. StyleGrab exists to close them.</p>
+    <p class="sub">The leading paid CSS inspector is fast and it works — that's why it's the category leader. But its own users keep hitting the same walls in their reviews. StyleGrab exists to close them.</p>
     <div class="cmp-table">
       <div class="cmp-row cmp-head"><span></span><span>The usual complaint</span><span>StyleGrab</span></div>
       <div class="cmp-row"><span class="cmp-x">✗</span><span>No try-before-buy — "worst purchase, complete con" is a real review</span><span class="cmp-ok">✓ Everything works free; Pro gates only advanced exports</span></div>
@@ -554,7 +561,7 @@ footer a:hover { color: var(--cyan); }
       <div class="cmp-row"><span class="cmp-x">✗</span><span>Requests "read and change all your data on every website"</span><span class="cmp-ok">✓ <code>activeTab</code> only — injected solely on the page you invoke it on</span></div>
       <div class="cmp-row"><span class="cmp-x">✗</span><span>$69–$120, discount-cycle pricing</span><span class="cmp-ok">✓ $29 flat, one price, no countdown timer</span></div>
     </div>
-    <p class="cmp-foot">Sources: public reviews on the Chrome Web Store and indie-hacker writeups of CSS Scan. We're not claiming CSS Scan is bad software — it clearly isn't, at 20k+ users. These are just the specific gaps we built StyleGrab to close.</p>
+    <p class="cmp-foot">Sources: public reviews on the Chrome Web Store and indie-hacker writeups of similar paid CSS-inspector extensions. We're not claiming the competition is bad software — it clearly isn't, at 20k+ users. These are just the specific gaps we built StyleGrab to close.</p>
   </div>
 </section>
 
@@ -689,7 +696,7 @@ footer a:hover { color: var(--cyan); }
     "border-right-width","border-bottom-width",
     "border-left-width","border-left-style","border-left-color",
     "border-top-left-radius","border-top-right-radius","border-bottom-right-radius","border-bottom-left-radius",
-    "background-color","background-image","color","font-family","font-size","font-weight",
+    "object-fit","background-color","background-image","color","font-family","font-size","font-weight",
     "line-height","letter-spacing","text-transform","box-shadow","cursor","transition-property",
     "transition-duration","caret-color","outline-width","white-space"];
 
@@ -768,7 +775,7 @@ footer a:hover { color: var(--cyan); }
       delete m["transition-property"]; delete m["transition-duration"];
     }
     var order = ["display","position","flex-direction","flex-wrap","align-items","justify-content","gap","max-width",
-      "padding","margin","border","border-left","border-radius","background-color","background-image","color",
+      "padding","margin","border","border-left","border-radius","object-fit","background-color","background-image","color",
       "font-family","font-size","font-weight","line-height","letter-spacing","text-transform",
       "white-space","box-shadow","outline-width","caret-color","transition","cursor"];
     var out = [];
@@ -1170,6 +1177,10 @@ footer a:hover { color: var(--cyan); }
     for (var i = 0; i < nodes.length; i++) {
       var bi = getComputedStyle(nodes[i]).backgroundImage;
       if (bi && bi !== "none" && out.indexOf(bi) === -1) out.push(bi);
+      if (nodes[i].tagName === "IMG" && nodes[i].src) {
+        var u = 'url("' + nodes[i].src + '")';
+        if (out.indexOf(u) === -1) out.push(u);
+      }
     }
     return out;
   }
