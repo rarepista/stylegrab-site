@@ -226,6 +226,22 @@ h1 .t-dim { color: var(--faint); }
 .feat .f-k { font: 700 12px var(--mono); color: var(--cyan); display: block; margin-bottom: 6px; }
 .feat p { font-size: 13.5px; color: var(--dim); }
 
+code { font: 12.5px var(--mono); background: var(--bg3); border: 1px solid var(--line-soft);
+  border-radius: 4px; padding: 1px 6px; color: var(--text); }
+
+/* ------------------------------ compare ------------------------------ */
+#compare { padding: 70px 0; border-top: 1px solid var(--line-soft); }
+.cmp-table { margin-top: 28px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--bg2); }
+.cmp-row { display: grid; grid-template-columns: 26px 1fr 1fr; gap: 16px; align-items: center;
+  padding: 14px 18px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+.cmp-row:last-child { border-bottom: 0; }
+.cmp-head { background: var(--bg3); font: 700 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--dim); padding: 10px 18px; }
+.cmp-row:not(.cmp-head) > span:nth-child(2) { color: var(--dim); }
+.cmp-x { color: #E86A5E; font-weight: 700; text-align: center; }
+.cmp-ok { color: var(--ok); }
+.cmp-ok code { color: var(--ok); background: rgba(111,220,168,.1); border-color: rgba(111,220,168,.3); }
+.cmp-foot { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 640px; }
+
 
 /* ------------------------------ pricing ------------------------------ */
 #pricing { padding: 70px 0; border-top: 1px solid var(--line-soft); }
@@ -250,6 +266,11 @@ h1 .t-dim { color: var(--faint); }
 .privacy b { font: 700 13px var(--mono); color: var(--ok); }
 .privacy span { font: 13px var(--sans); color: var(--dim); }
 
+/* ------------------------------ builder note ------------------------------ */
+#builder { padding: 50px 0; }
+.builder-in { max-width: 680px; }
+.builder-copy { font-size: 14.5px; line-height: 1.75; color: var(--dim); }
+
 /* ------------------------------ faq ------------------------------ */
 #faq { padding: 70px 0; }
 .faq-list { margin-top: 24px; max-width: 760px; }
@@ -272,6 +293,9 @@ footer a:hover { color: var(--cyan); }
   .price-grid { grid-template-columns: 1fr; }
   .board { grid-template-columns: 1fr; }
   .nav-links { display: none; }
+  .cmp-row { grid-template-columns: 1fr; gap: 4px; }
+  .cmp-row.cmp-head { display: none; }
+  .cmp-x { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -290,6 +314,7 @@ footer a:hover { color: var(--cyan); }
     <div class="nav-links">
       <a href="#demo">Live demo</a>
       <a href="#features">Features</a>
+      <a href="#compare">Why switch</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </div>
@@ -302,17 +327,17 @@ footer a:hover { color: var(--cyan); }
   <div class="grid-bg" aria-hidden="true"></div>
   <div class="wrap hero-in">
     <span class="reticle-corner rc-tl" aria-hidden="true"></span>
-    <span class="eyebrow">Chrome extension · 100% local · works offline</span>
+    <span class="eyebrow">Goodbye, "Inspect Element" · Chrome / Edge / Brave · works offline</span>
     <h1>Hover any element.<br>
       <span class="t-amber">See its CSS</span><span class="t-dim">.</span>
       <span class="t-cyan">Ship it</span><span class="t-dim">.</span></h1>
-    <p class="sub">StyleGrab reads the styles a site's developer actually wrote — pseudo-classes, media queries, keyframes and all — and copies them as clean <b>CSS, Tailwind, JSX, styled-components, Vue or Svelte</b>. No DevTools spelunking.</p>
+    <p class="sub">StyleGrab reads the styles a site's developer actually wrote — pseudo-classes, media queries, keyframes and all — and copies them as clean <b>CSS, Tailwind, JSX, styled-components, Vue or Svelte</b>. No reassembling a cascade by hand.</p>
     <div class="hero-ctas">
       <!-- TODO: swap for the Chrome Web Store listing URL once approved -->
       <a class="btn primary" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener">Add to Chrome — free</a>
-      <a class="btn" href="#demo">Try the live demo ↓</a>
+      <a class="btn" href="#demo">Try it live, no install ↓</a>
     </div>
-    <p class="hero-note"><b>No account. No servers. No data collection.</b> Injected only on pages where you invoke it.</p>
+    <p class="hero-note"><b>No account. No servers. No data collection.</b> Injected only on pages where you invoke it. Don't take that on faith — the demo below is the real engine, running right now.</p>
     <span class="reticle-corner rc-br" aria-hidden="true"></span>
   </div>
 </header>
@@ -378,10 +403,29 @@ footer a:hover { color: var(--cyan); }
   </div>
 </section>
 
+<section id="compare">
+  <div class="wrap">
+    <span class="eyebrow">Why switch</span>
+    <h2>We read the reviews of the tool everyone already uses.</h2>
+    <p class="sub">CSS Scan is the category leader for a reason — it's fast and it works. But its own users keep hitting the same walls in their reviews. StyleGrab exists to close them.</p>
+    <div class="cmp-table">
+      <div class="cmp-row cmp-head"><span></span><span>The usual complaint</span><span>StyleGrab</span></div>
+      <div class="cmp-row"><span class="cmp-x">✗</span><span>No try-before-buy — "worst purchase, complete con" is a real review</span><span class="cmp-ok">✓ Everything works free; Pro gates only advanced exports</span></div>
+      <div class="cmp-row"><span class="cmp-x">✗</span><span>Copies raw <code>var(--x)</code> that breaks the moment you paste it elsewhere</span><span class="cmp-ok">✓ Variables resolve to real values (toggleable)</span></div>
+      <div class="cmp-row"><span class="cmp-x">✗</span><span>Pasted CSS loses the site's typography — no inherited font/color</span><span class="cmp-ok">✓ Inherited essentials fold in automatically</span></div>
+      <div class="cmp-row"><span class="cmp-x">✗</span><span>CSS only — no framework output</span><span class="cmp-ok">✓ Tailwind, JSX, styled-components, Vue, Svelte</span></div>
+      <div class="cmp-row"><span class="cmp-x">✗</span><span>Requests "read and change all your data on every website"</span><span class="cmp-ok">✓ <code>activeTab</code> only — injected solely on the page you invoke it on</span></div>
+      <div class="cmp-row"><span class="cmp-x">✗</span><span>$69–$120, discount-cycle pricing</span><span class="cmp-ok">✓ $29 flat, one price, no countdown timer</span></div>
+    </div>
+    <p class="cmp-foot">Sources: public reviews on the Chrome Web Store and indie-hacker writeups of CSS Scan. We're not claiming CSS Scan is bad software — it clearly isn't, at 20k+ users. These are just the specific gaps we built StyleGrab to close.</p>
+  </div>
+</section>
+
 <section id="pricing">
   <div class="wrap">
     <span class="eyebrow">Pricing</span>
     <h2>Free to use. $29 once if it earns it.</h2>
+    <p class="sub">Founding price — Pro is priced at $29 while StyleGrab is new. That number goes up as more of the roadmap ships; it never goes up for people who already bought in.</p>
     <div class="price-grid">
       <div class="plan">
         <h3>Free</h3>
@@ -413,6 +457,7 @@ footer a:hover { color: var(--cyan); }
         <a class="btn primary" href="https://github.com/vishalbagi/stylegrab#install-developer-mode" target="_blank" rel="noopener">Install — trial starts in one click</a>
       </div>
     </div>
+    <p class="cmp-foot" style="margin-top:20px">No subscription — ever. One payment, one license, updates for as long as you use it. Not sure yet? The 7-day trial unlocks every Pro feature with zero commitment, and if you buy and it's not for you, <a href="mailto:vishalbagi92@gmail.com">email for a refund</a> within 14 days.</p>
   </div>
 </section>
 
@@ -424,6 +469,13 @@ footer a:hover { color: var(--cyan); }
     <span>The only third party is Dodo Payments — contacted solely to validate a license key if you buy Pro.</span>
   </div>
 </div>
+
+<section id="builder">
+  <div class="wrap builder-in">
+    <span class="eyebrow">Who's behind this</span>
+    <p class="builder-copy">StyleGrab is a small, independently-built tool — not a company, not a growth team, no funding round to justify. It exists because copying CSS out of DevTools got old, and a tool that reads pages you're already trusted to view shouldn't need "access to all your data on every website" to do it. No user count to show off yet, no logo wall. Just the actual product, running live in the demo above — go check the CSS it just extracted from this very page.</p>
+  </div>
+</section>
 
 <section id="faq">
   <div class="wrap">
@@ -453,6 +505,18 @@ footer a:hover { color: var(--cyan); }
       <details>
         <summary>Copying styles — is that okay?</summary>
         <p>StyleGrab is a learning and productivity tool, the same way View Source and DevTools are. Use it to study techniques, debug, and move your own work between projects. Respect other people's IP; don't clone whole products.</p>
+      </details>
+      <details>
+        <summary>Is $29 really a one-time payment, or does it turn into a subscription?</summary>
+        <p>One time, full stop. No recurring billing exists in StyleGrab's checkout — there's nothing to cancel later because nothing renews. You get every update to Pro features for as long as you use the extension, for that single payment.</p>
+      </details>
+      <details>
+        <summary>How many browsers can I use my license on?</summary>
+        <p>A license key activates on up to 3 browser profiles at once — enough for a work laptop, a personal machine, and a backup. Remove a key from one in Options to free up a slot for another.</p>
+      </details>
+      <details>
+        <summary>Does it work in Edge or Brave?</summary>
+        <p>Yes — StyleGrab is a standard Manifest V3 extension with no Chrome-only APIs, so it installs and runs identically on any Chromium-based browser (Edge, Brave, Arc, Opera) via the same package.</p>
       </details>
     </div>
   </div>
