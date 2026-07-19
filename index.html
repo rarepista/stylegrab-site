@@ -190,16 +190,28 @@ h1 .t-dim { color: var(--faint); }
 .p-crumb .sep { color: var(--faint); margin: 0 3px; }
 .p-dims { flex-shrink: 0; color: var(--dim); font-size: 10.5px; border: 1px solid var(--line);
   border-radius: 5px; padding: 2px 7px; background: var(--bg2); font-variant-numeric: tabular-nums; }
-.p-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+.p-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;
   border-bottom: 1px solid var(--line-soft); }
-.seg { display: inline-flex; background: var(--bg3); border: 1px solid var(--line);
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--bg3); border: 1px solid var(--line);
   border-radius: 7px; padding: 2px; gap: 2px; }
-.seg button { font: 10.5px var(--mono); color: var(--dim); background: transparent; border: 0;
-  border-radius: 5px; padding: 4px 10px; cursor: pointer; transition: color .12s, background .12s; }
+.seg button { font: 10px var(--mono); color: var(--dim); background: transparent; border: 0;
+  border-radius: 5px; padding: 4px 7px; cursor: pointer; transition: color .12s, background .12s; }
 .seg button:hover { color: var(--text); }
 .seg button.on { color: var(--bg); background: var(--amber); font-weight: 700; }
 .p-copy { margin-left: auto; }
 .p-copy.ok { background: var(--ok); border-color: var(--ok); }
+
+/* meta chips — font, colors, contrast */
+.p-meta { display: flex; align-items: center; gap: 6px; padding: 7px 12px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line-soft); font-size: 10.5px; color: var(--dim); min-height: 15px; }
+.p-meta .m-item { display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  border: 1px solid var(--line-soft); border-radius: 5px; padding: 2px 7px; background: var(--bg3);
+  transition: border-color .12s, color .12s; }
+.p-meta .m-item:hover { color: var(--text); border-color: var(--cyan); }
+.p-meta .m-item.warn { color: var(--amber); border-color: var(--amber); }
+.p-dot { width: 9px; height: 9px; border-radius: 2px; border: 1px solid var(--line); display: inline-block; flex-shrink: 0; }
+.p-swatch { width: 9px; height: 9px; border-radius: 2px; border: 1px solid var(--line-hi);
+  display: inline-block; margin-right: 3px; vertical-align: -1px; cursor: pointer; }
 .p-code { background: var(--bg-code); overflow: auto; max-height: 430px; min-height: 320px; }
 .p-code pre { padding: 13px 15px; white-space: pre; font: 12px/1.7 var(--mono); tab-size: 2; }
 .p-code::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -374,15 +386,20 @@ footer a:hover { color: var(--cyan); }
           <span class="p-crumb" id="crumb"><span class="anc">board</span><span class="sep">›</span><span class="cur">hover a specimen</span></span>
           <span class="p-dims" id="dims">— × —</span>
         </div>
+        <div class="p-meta" id="meta"></div>
         <div class="p-bar">
           <div class="seg" role="tablist" aria-label="Output format">
             <button class="on" data-fmt="css">CSS</button>
             <button data-fmt="tailwind">Tailwind</button>
+            <button data-fmt="jsx">JSX</button>
+            <button data-fmt="styled">SC</button>
+            <button data-fmt="vue">Vue</button>
+            <button data-fmt="svelte">Svelte</button>
           </div>
           <button class="btn primary sm p-copy" id="copyBtn">Copy</button>
         </div>
         <div class="p-code"><pre id="code"><span class="tk-com">/* Hover a specimen on the left… */</span></pre></div>
-        <div class="p-foot"><span class="dot"></span> extracted live from this page · zero network requests</div>
+        <div class="p-foot" id="foot"><span class="dot"></span> extracted live from this page · zero network requests</div>
       </aside>
     </div>
   </div>
@@ -686,8 +703,68 @@ footer a:hover { color: var(--cyan); }
     return cls.filter(Boolean).join(" ");
   }
 
+  /* --------------------- JSX / styled-components / Vue / Svelte --------------------- */
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function toJsx(pairs, tag) {
+    var lines = pairs.map(function (d) {
+      var camel = d[0].replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
+      var val = /^-?[\d.]+$/.test(d[1]) ? d[1] : JSON.stringify(d[1]);
+      return "    " + camel + ": " + val + ",";
+    });
+    return "export default function Component() {\n  return (\n    <" + tag + " style={{\n" + lines.join("\n") + "\n    }} />\n  );\n}";
+  }
+  function toStyled(pairs, tag) {
+    var body = pairs.map(function (d) { return "  " + d[0] + ": " + d[1] + ";"; }).join("\n");
+    var name = "Styled" + capitalize(tag);
+    return "const " + name + " = styled." + tag + "`\n" + body + "\n`;\n\nexport default function Component() {\n  return <" + name + " />;\n}";
+  }
+  function toVueSfc(pairs, tag) {
+    var body = pairs.map(function (d) { return "  " + d[0] + ": " + d[1] + ";"; }).join("\n");
+    return "<template>\n  <" + tag + ' class="el" />\n</template>\n\n<style scoped>\n.el {\n' + body + "\n}\n</style>";
+  }
+  function toSvelte(pairs, tag) {
+    var body = pairs.map(function (d) { return "  " + d[0] + ": " + d[1] + ";"; }).join("\n");
+    return "<" + tag + ' class="el" />\n\n<style>\n.el {\n' + body + "\n}\n</style>";
+  }
+
+  /* ------------------------------ WCAG contrast ------------------------------ */
+  function parseRgb(v) {
+    var m = v && v.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+)\s*)?\)/);
+    if (!m) return null;
+    return [+m[1], +m[2], +m[3], m[4] === undefined ? 1 : +m[4]];
+  }
+  function relLum(rgb) {
+    function f(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+    return 0.2126 * f(rgb[0]) + 0.7152 * f(rgb[1]) + 0.0722 * f(rgb[2]);
+  }
+  function effectiveBg(el) {
+    var node = el, layers = [];
+    while (node) {
+      var c = parseRgb(getComputedStyle(node).backgroundColor);
+      if (c && c[3] > 0) { layers.push(c); if (c[3] >= 1) break; }
+      node = node.parentElement;
+    }
+    var r = 255, g = 255, b = 255;
+    for (var i = layers.length - 1; i >= 0; i--) {
+      var c = layers[i];
+      r = c[0] * c[3] + r * (1 - c[3]); g = c[1] * c[3] + g * (1 - c[3]); b = c[2] * c[3] + b * (1 - c[3]);
+    }
+    return [r, g, b];
+  }
+  function contrastInfo(el, cs) {
+    var fg = parseRgb(cs.color);
+    if (!fg) return null;
+    var bg = effectiveBg(el);
+    var l1 = relLum(fg), l2 = relLum(bg);
+    var ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    var px = parseFloat(cs.fontSize) || 16;
+    var bold = (parseInt(cs.fontWeight, 10) || 400) >= 700;
+    var large = px >= 24 || (bold && px >= 18.66);
+    return { ratio: ratio, pass: ratio >= (large ? 3 : 4.5) };
+  }
+
   /* ------------------------------ render ------------------------------ */
-  function escapeHtml(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function escapeHtml(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function highlight(css) {
     return css.split("\n").map(function (line) {
       var t = line.trim();
@@ -696,11 +773,18 @@ footer a:hover { color: var(--cyan); }
         return w + '<span class="tk-sel">' + escapeHtml(sel) + '</span><span class="tk-pun">' + br + "</span>";
       });
       if (t === "}") return '<span class="tk-pun">' + escapeHtml(line) + "</span>";
-      var m = line.match(/^(\s*)([\w-]+)(\s*:\s*)(.*?)(;?)\s*$/);
+      var m = line.match(/^(\s*)([\w-]+)(\s*:\s*)(.*?)([;,]?)\s*$/);
       if (m) {
         var val = escapeHtml(m[4])
           .replace(/(-?[\d.]+)(px|em|rem|%|s|deg)?(?![\w-])/g, '<span class="tk-num">$1$2</span>')
-          .replace(/(#[0-9a-fA-F]{3,8})\b/g, '<span class="tk-num">$1</span>')
+          // swatch injected in this final pass only, same reasoning as the
+          // real extension: nothing re-scans the replacement output after it
+          .replace(/(#[0-9a-fA-F]{3,8})\b/g, function (mm, hexv) {
+            var n = hexv.length - 1;
+            var sw = (n === 3 || n === 4 || n === 6 || n === 8)
+              ? '<span class="p-swatch" style="background:' + hexv + '" data-copy="' + hexv + '" title="Copy ' + hexv + '"></span>' : "";
+            return sw + '<span class="tk-num">' + hexv + '</span>';
+          })
           .replace(/(&quot;[^&]*&quot;|'[^']*')/g, '<span class="tk-str">$1</span>');
         return m[1] + '<span class="tk-prop">' + escapeHtml(m[2]) + '</span><span class="tk-pun">:</span> <span class="tk-val">' + val + '</span><span class="tk-pun">' + m[5] + "</span>";
       }
@@ -714,20 +798,31 @@ footer a:hover { color: var(--cyan); }
   var codeEl = document.getElementById("code");
   var crumbEl = document.getElementById("crumb");
   var dimsEl = document.getElementById("dims");
+  var metaEl = document.getElementById("meta");
+  var footEl = document.getElementById("foot");
   var copyBtn = document.getElementById("copyBtn");
   var toastEl = document.getElementById("toast");
   var seg = document.querySelector(".seg");
   var fmt = "css";
   var current = null;
-  var lastCss = "", lastTw = "";
+  var outputs = {};
 
   function selectSpec(el) {
     current = el;
     var name = el.getAttribute("data-name") || el.tagName.toLowerCase();
+    var tag = name.split(".")[0] || el.tagName.toLowerCase();
     var pairs = extract(el);
     var sel = "." + name.split(".").pop();
-    lastCss = sel + " {\n" + pairs.map(function (d) { return "  " + d[0] + ": " + d[1] + ";"; }).join("\n") + "\n}";
-    lastTw = '<' + name.split(".")[0] + ' class="' + toTw(pairs) + '">';
+    var cssText = sel + " {\n" + pairs.map(function (d) { return "  " + d[0] + ": " + d[1] + ";"; }).join("\n") + "\n}";
+    outputs = {
+      css: cssText,
+      tailwind: '<' + tag + ' class="' + toTw(pairs) + '">',
+      jsx: toJsx(pairs, tag),
+      styled: toStyled(pairs, tag),
+      vue: toVueSfc(pairs, tag),
+      svelte: toSvelte(pairs, tag)
+    };
+    footEl.innerHTML = '<span class="dot"></span> ' + pairs.length + " declaration" + (pairs.length === 1 ? "" : "s") + " · extracted live · zero network requests";
     render();
 
     var br = board.getBoundingClientRect(), r = el.getBoundingClientRect();
@@ -744,12 +839,36 @@ footer a:hover { color: var(--cyan); }
 
     crumbEl.innerHTML = '<span class="anc">board</span><span class="sep">›</span><span class="cur">' + escapeHtml(name) + "</span>";
     dimsEl.textContent = Math.round(r.width) + " × " + Math.round(r.height);
+
+    /* meta chips: font · color · background · WCAG contrast */
+    var cs = getComputedStyle(el);
+    var fam = cs.fontFamily.split(",")[0].replace(/["']/g, "").trim();
+    var color = hex(cs.color);
+    var chips = [
+      '<span class="m-item" data-copy="' + escapeHtml(cs.fontFamily) + '">' + escapeHtml(fam) + " · " + cs.fontSize + "/" + cs.fontWeight + "</span>",
+      '<span class="m-item" data-copy="' + color + '"><span class="p-dot" style="background:' + color + '"></span>' + color + "</span>"
+    ];
+    var bgRaw = cs.backgroundColor;
+    if (bgRaw && bgRaw !== "rgba(0, 0, 0, 0)" && bgRaw !== "transparent") {
+      var bgHex = hex(bgRaw);
+      chips.push('<span class="m-item" data-copy="' + bgHex + '"><span class="p-dot" style="background:' + bgHex + '"></span>' + bgHex + "</span>");
+    }
+    if (el.textContent && el.textContent.trim()) {
+      var c = contrastInfo(el, cs);
+      if (c) {
+        var ratio = c.ratio.toFixed(1);
+        chips.push('<span class="m-item' + (c.pass ? "" : " warn") + '" data-copy="' + ratio + ':1" title="WCAG contrast — ' + (c.pass ? "passes" : "fails") + ' AA">' + ratio + ":1" + (c.pass ? "" : " ✗") + "</span>");
+      }
+    }
+    metaEl.innerHTML = chips.join("");
   }
 
   function render() {
-    codeEl.innerHTML = fmt === "css"
-      ? highlight(lastCss || "/* Hover a specimen on the left… */")
-      : (lastTw ? escapeHtml(lastTw).replace(/class=&quot;([^&]*)&quot;/, 'class=&quot;<span class="tk-str">$1</span>&quot;') : '<span class="tk-com">/* Hover a specimen on the left… */</span>');
+    var out = outputs[fmt];
+    if (!out) { codeEl.innerHTML = '<span class="tk-com">/* Hover a specimen on the left… */</span>'; return; }
+    codeEl.innerHTML = (fmt === "css" || fmt === "styled" || fmt === "jsx" || fmt === "vue" || fmt === "svelte")
+      ? highlight(out)
+      : escapeHtml(out).replace(/class=&quot;([^&]*)&quot;/, 'class=&quot;<span class="tk-str">$1</span>&quot;');
   }
 
   board.addEventListener("mouseover", function (e) {
@@ -779,8 +898,21 @@ footer a:hover { color: var(--cyan); }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1500);
   }
+  function copyText(text, label) {
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
+      toast((label || "Copied") + " — paste it in your editor");
+    }).catch(function () { toast("Clipboard blocked — select & copy manually"); });
+  }
+  codeEl.addEventListener("click", function (e) {
+    var sw = e.target.closest("[data-copy]");
+    if (sw) copyText(sw.getAttribute("data-copy"), "Copied color");
+  });
+  metaEl.addEventListener("click", function (e) {
+    var chip = e.target.closest("[data-copy]");
+    if (chip) copyText(chip.getAttribute("data-copy"), "Copied");
+  });
   function doCopy() {
-    var text = fmt === "css" ? lastCss : lastTw;
+    var text = outputs[fmt];
     if (!text) { toast("Hover a specimen first"); return; }
     (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
       copyBtn.classList.add("ok"); copyBtn.textContent = "Copied ✓";
