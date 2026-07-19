@@ -208,6 +208,25 @@ h1 .t-dim { color: var(--faint); }
 .s-avatar .a-meta { line-height: 1.25; }
 .s-avatar .a-name { font: 600 13.5px var(--sans); color: #EAF1F9; }
 .s-avatar .a-role { font: 400 11.5px var(--sans); color: #8FA0B5; }
+.s-quote {
+  width: 100%; max-width: 260px; padding: 16px 20px;
+  background: #141B26; border-left: 3px solid #F0B25C; border-radius: 4px;
+}
+.s-quote p { font: 500 14px/1.5 var(--sans); color: #EAF1F9; margin: 0 0 8px; }
+.s-quote cite { font: 600 11.5px var(--mono); color: #8FA0B5; font-style: normal; }
+.s-stat {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 14px 20px; background: #141B26; border: 1px solid #2A3648; border-radius: 12px;
+}
+.s-stat .stat-num { font: 800 30px var(--mono); color: #6FDCA8; letter-spacing: -0.02em; }
+.s-stat .stat-label { font: 600 11px var(--sans); color: #8FA0B5; text-transform: uppercase; letter-spacing: 0.08em; }
+.s-chips {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 230px;
+}
+.s-chips .chip {
+  display: inline-block; padding: 5px 12px; background: #1A2333; color: #4CC2FF;
+  border: 1px solid #2A3648; border-radius: 999px; font: 500 11.5px var(--sans);
+}
 
 /* highlight reticle inside the board */
 .hl { position: absolute; pointer-events: none; border-radius: 4px;
@@ -457,6 +476,17 @@ footer a:hover { color: var(--cyan); }
           <div class="a-img">VB</div>
           <div class="a-meta"><div class="a-name">Vishal B.</div><div class="a-role">builds things</div></div>
         </div>
+        <div class="spec s-quote" data-name="div.quote" tabindex="0" role="button" aria-label="Pull quote — press Enter to inspect and copy its CSS">
+          <p>"Copies CSS in the format my project actually uses."</p>
+          <cite>— a happy dev</cite>
+        </div>
+        <div class="spec s-stat" data-name="div.stat" tabindex="0" role="button" aria-label="Stat widget — press Enter to inspect and copy its CSS">
+          <span class="stat-num">128ms</span>
+          <span class="stat-label">Avg. extract time</span>
+        </div>
+        <div class="spec s-chips" data-name="div.chips" tabindex="0" role="button" aria-label="Tag chip group — press Enter to inspect and copy its CSS">
+          <span class="chip">css</span><span class="chip">tailwind</span><span class="chip">jsx</span>
+        </div>
         <div class="hl" id="hl"></div>
         <div class="hl-tag" id="hlTag"></div>
       </div>
@@ -652,11 +682,12 @@ footer a:hover { color: var(--cyan); }
 (function () {
   "use strict";
 
-  var PROPS = ["display","position","align-items","justify-content","gap","flex-direction",
+  var PROPS = ["display","position","align-items","justify-content","gap","flex-direction","flex-wrap",
     "width","height","max-width","padding-top","padding-right","padding-bottom","padding-left",
     "margin-top","margin-right","margin-bottom","margin-left",
     "border-top-width","border-top-style","border-top-color",
-    "border-right-width","border-bottom-width","border-left-width",
+    "border-right-width","border-bottom-width",
+    "border-left-width","border-left-style","border-left-color",
     "border-top-left-radius","border-top-right-radius","border-bottom-right-radius","border-bottom-left-radius",
     "background-color","background-image","color","font-family","font-size","font-weight",
     "line-height","letter-spacing","text-transform","box-shadow","cursor","transition-property",
@@ -727,14 +758,17 @@ footer a:hover { color: var(--cyan); }
     }
     if (m["border-top-width"] && m["border-top-style"] && m["border-top-style"] !== "none") {
       m["border"] = m["border-top-width"] + " " + m["border-top-style"] + (m["border-top-color"] ? " " + m["border-top-color"] : "");
+    } else if (m["border-left-width"] && m["border-left-style"] && m["border-left-style"] !== "none") {
+      m["border-left"] = m["border-left-width"] + " " + m["border-left-style"] + (m["border-left-color"] ? " " + m["border-left-color"] : "");
     }
-    ["border-top-width","border-top-style","border-top-color","border-right-width","border-bottom-width","border-left-width"].forEach(function (k) { delete m[k]; });
+    ["border-top-width","border-top-style","border-top-color","border-right-width","border-bottom-width",
+     "border-left-width","border-left-style","border-left-color"].forEach(function (k) { delete m[k]; });
     if (m["transition-property"] && m["transition-duration"]) {
       m["transition"] = m["transition-property"] + " " + m["transition-duration"];
       delete m["transition-property"]; delete m["transition-duration"];
     }
-    var order = ["display","position","flex-direction","align-items","justify-content","gap","max-width",
-      "padding","margin","border","border-radius","background-color","background-image","color",
+    var order = ["display","position","flex-direction","flex-wrap","align-items","justify-content","gap","max-width",
+      "padding","margin","border","border-left","border-radius","background-color","background-image","color",
       "font-family","font-size","font-weight","line-height","letter-spacing","text-transform",
       "white-space","box-shadow","outline-width","caret-color","transition","cursor"];
     var out = [];
