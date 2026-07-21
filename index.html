@@ -12,6 +12,15 @@
     content="Inspect and copy production CSS from any site — as CSS, Tailwind, JSX, styled-components, Vue or Svelte. Free tier, $29 lifetime Pro.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stylegrab.000426.xyz/">
+  <meta property="og:image" content="https://stylegrab.000426.xyz/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="StyleGrab">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="StyleGrab — hover, see the CSS, ship it">
+  <meta name="twitter:description"
+    content="Inspect and copy production CSS from any site — as CSS, Tailwind, JSX, styled-components, Vue or Svelte. Free tier, $29 lifetime Pro.">
+  <meta name="twitter:image" content="https://stylegrab.000426.xyz/og-image.png">
   <link rel="canonical" href="https://stylegrab.000426.xyz/">
   <meta name="theme-color" content="#0B0E14">
   <link rel="icon"
@@ -21,6 +30,115 @@
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "StyleGrab — Inspect & Copy CSS",
+    "description": "StyleGrab shows you any element's CSS on hover and copies it as clean CSS, Tailwind, JSX, styled-components, Vue or Svelte. 100% local, activeTab-only permissions, free tier included.",
+    "url": "https://stylegrab.000426.xyz/",
+    "image": "https://stylegrab.000426.xyz/og-image.png",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Chrome, Edge, Brave, Opera",
+    "publisher": { "@type": "Organization", "name": "StyleGrab" },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free",
+        "price": "0",
+        "priceCurrency": "USD",
+        "category": "free"
+      },
+      {
+        "@type": "Offer",
+        "name": "Pro",
+        "price": "29",
+        "priceCurrency": "USD",
+        "category": "one-time purchase"
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is this different from DevTools?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DevTools shows one rule at a time and makes you reassemble the cascade by hand. StyleGrab merges everything that applies to an element — including :hover states, breakpoints and keyframes — into one paste-ready block, then converts it to your framework's dialect."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the free tier actually free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, permanently: hover-inspect, full CSS copy, box-model overlay and the eyedropper never expire and never nag. Pro adds the framework exports, component copy, live editing and extraction tools."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What data do you collect?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "None. The extension runs entirely in your browser, makes zero network requests during normal use, and only touches pages where you explicitly invoke it (activeTab permission). Checkout, if you buy, happens through Dodo Payments — a merchant of record that handles cards, UPI, PayPal and taxes on our behalf. We never see your payment details, and there's no account to create on either side."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens after I buy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Dodo Payments emails you a license key automatically. Paste it into StyleGrab's Options page and Pro unlocks instantly — no account, no login. The key re-validates itself every few days in the background; if you're offline, StyleGrab keeps your Pro status rather than locking you out."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it work on React / Vue / Tailwind sites?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — it reads the browser's stylesheet model, so the source framework doesn't matter. It also understands modern CSS plumbing: @layer, adopted stylesheets and shadow-root styles."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Copying styles — is that okay?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "StyleGrab is a learning and productivity tool, the same way View Source and DevTools are. Use it to study techniques, debug, and move your own work between projects. Respect other people's IP; don't clone whole products."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is $29 really a one-time payment, or does it turn into a subscription?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "One time, full stop. No recurring billing exists in StyleGrab's checkout — there's nothing to cancel later because nothing renews. You get every update to Pro features for as long as you use the extension, for that single payment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many browsers can I use my license on?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A license key activates on up to 3 browser profiles at once — enough for a work laptop, a personal machine, and a backup. Remove a key from one in Options to free up a slot for another."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does it work in Edge or Brave?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — StyleGrab is a standard Manifest V3 extension with no Chrome-only APIs, so it installs and runs identically on any Chromium-based browser (Edge, Brave, Arc, Opera) via the same package."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     /* ============================================================
    StyleGrab — landing. Same design tokens as the product panel.

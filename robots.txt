@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://stylegrab.000426.xyz/sitemap.xml
